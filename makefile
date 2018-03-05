@@ -6,8 +6,8 @@
 
 #==================================================
 # MACRO definitions
-CFLAG = -std=c99 -Wall
-CC = gcc
+CFLAG = -std=c99 -Wall 
+CC = gcc 
 
 #==================================================
 # All Targets
@@ -27,7 +27,7 @@ Q3a lz77_encoding: lz77_encoding.c \
 	$(CC) $(CFLAG) -o lz77_encoding \
                   lz77_encoding.c \
                   lz77_encoding_function.o \
-                  libpnm.o
+                  libpnm.o -lm
 
 
 #--------------------------------------------------
@@ -84,7 +84,7 @@ Q1 lz77_encoding_function.o: lz77_encoding_function.c \
 Q2 lz77_decoding_function.o: lz77_decoding_function.c \
                                lz77_decoding_function.h \
                                libpnm.h
-	$(CC) $(CFLAG) -c lz77_decoding_function.c
+	$(CC) $(CFLAG) -c lz77_decoding_function.c 
 
 
 #--------------------------------------------------

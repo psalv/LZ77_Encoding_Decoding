@@ -1,13 +1,20 @@
 #include "lz77_encoding_function.h"
 
+
+// Return the max of two integers
 int max(int a, int b){
 	return a > b ? a : b;
 }
 
+
+// Using a single integer position, determine the character referenced in the pgm image
 unsigned char get_pgm_image_value(struct PGM_Image* image, int pos){
 	return image->image[(int)floor(pos / image->width)][pos % image->width];
 }
 
+
+// Determine the number of matching characters when using an offset of match_pos
+// and a frontier of text_pos
 int find_number_of_matches(struct PGM_Image* image, int match_pos, int text_pos, int total){
 	int match_num = 0;
 	while(get_pgm_image_value(image, match_pos) == get_pgm_image_value(image, text_pos)){
@@ -21,6 +28,7 @@ int find_number_of_matches(struct PGM_Image* image, int match_pos, int text_pos,
 	}
 	return match_num;
 }
+
 
 void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_size, 
 	float *avg_offset_Ptr, float *std_offset_Ptr, float *avg_length_Ptr, 
@@ -82,7 +90,8 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 
 	// Creating altered filename for output (lz)
 	char numstr1[21];
-	char* new_file_name1 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr1, 10);
+	char* new_file_name1 = in_PGM_filename_Ptr + '1';
+	// char* new_file_name1 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr1, 10);
 	strcat(new_file_name1, "lz");
 
 	FILE *f = fopen(new_file_name1, "wb");
@@ -96,21 +105,21 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	fclose(f);
 
 
-
-
-
 	// Creating altered filename for output (csv)
 	char numstr2[21];
-	char* new_file_name2 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr2, 10);
+	char* new_file_name2 = in_PGM_filename_Ptr + '1';
+	// char* new_file_name2 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr2, 10);
 	strcat(new_file_name2, ".offsets.csv");
 
 	char numstr3[21];
-	char* new_file_name3 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr3, 10);
+	char* new_file_name3 = in_PGM_filename_Ptr + '1';
+	// char* new_file_name3 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr3, 10);
 	strcat(new_file_name3, ".lengths.csv");
 
 	f = fopen(new_file_name2, "w");
 	FILE *f2 = fopen(new_file_name3, "w");
 
+	// Writing offsets and mismatches to appropriate files
 	for(int i = 0; i < number_of_tokens; i++){
 		if(i != 0){
 			fprintf(f, ",");
@@ -124,12 +133,7 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	fclose(f2);
 
 
-
-
-
-
-
-	// need to calculate average, standard deviation for offsets and match lengths
+	// Calculating the average
 	*avg_offset_Ptr = 0.0;
 	*avg_length_Ptr = 0.0;
 	for(int i = 0; i < number_of_tokens; i++){
@@ -140,10 +144,15 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	*avg_length_Ptr /= number_of_tokens;
 
 
-
-	// TODO !!!!!!!!!!!!!!! NEED SD
-
-
+	// Calculating standard deviation
+	*std_offset_Ptr = 0.0;
+	*std_length_Ptr = 0.0;
+	for(int i = 0; i < number_of_tokens; i++){
+		*avg_offset_Ptr += pow(offsets[i] - *avg_offset_Ptr, 2);
+		*avg_length_Ptr += pow(mismatches[i] - *avg_length_Ptr, 2);
+	}
+	*avg_offset_Ptr = sqrt(*avg_offset_Ptr / number_of_tokens);
+	*avg_length_Ptr = sqrt(*avg_length_Ptr / number_of_tokens);
 
 
 	// Clearing all freed memory
