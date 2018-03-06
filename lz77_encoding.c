@@ -32,11 +32,11 @@ int main(int argc, char *argv[]){
     	&avg_length_Ptr, &std_length_Ptr);
 
     time = clock() - time;
-    printf("\nTime taken to encode:             %ld ms\n", (time * 1000) / CLOCKS_PER_SEC);
+    printf("\nCompression time:                 %ld ms\n", (time * 1000) / CLOCKS_PER_SEC);
     printf("Average offset:                   %f\n", avg_offset_Ptr);
     printf("Stand deviation of offset:        %f\n", std_offset_Ptr);
     printf("Average length of match:          %f\n", avg_length_Ptr);
-    printf("Stand deviation of match length:  %f\n", std_length_Ptr);
+    printf("Stand deviation of match length:  %f\n\n", std_length_Ptr);
 
 	return 0;
 }
