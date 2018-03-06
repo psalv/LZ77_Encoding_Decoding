@@ -43,13 +43,13 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	// Storing the token data
 	int* offsets = calloc(total, sizeof(int));
 	int* match_lengths = calloc(total, sizeof(int));
-	char* mismatches = malloc(total * sizeof(int));
+	int* mismatches = malloc(total * sizeof(int));
 	int number_of_tokens = 0;
 
 	int max_match_pos;			// offset
 	int max_match_num;			// match length
 	int cur_pos = 0;			// current position within the image
-	unsigned char cur_value;
+	int cur_value;
 
 
 	/*** DETERMINING TOKENS ***/
