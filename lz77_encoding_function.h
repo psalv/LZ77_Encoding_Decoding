@@ -16,7 +16,7 @@ struct header{
 	int max_gray_value;
 };
 
-int max(int a, int b);
+int min(int a, int b);
 
 unsigned char get_pgm_image_value(struct PGM_Image* image, int pos);
 

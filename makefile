@@ -6,7 +6,7 @@
 
 #==================================================
 # MACRO definitions
-CFLAG = -std=c99 -Wall -lm
+CFLAG = -std=c99 -Wall 
 CC = gcc
 
 #==================================================
@@ -27,7 +27,7 @@ Q3a lz77_encoding: lz77_encoding.c \
 	$(CC) $(CFLAG) -o lz77_encoding \
                   lz77_encoding.c \
                   lz77_encoding_function.o \
-                  libpnm.o
+                  libpnm.o -lm
 
 
 #--------------------------------------------------
@@ -176,17 +176,17 @@ testCompression: lz77_encoding
 	@echo "----------------------------------------"
 	@echo "Generating  LZ77 compressed images"
 	@echo 
-	./lz77_encoding peppers.raw.pgm 5120
+	# ./lz77_encoding peppers.raw.pgm 5120
 	@echo "----------------------------------------"
-	./lz77_encoding peppers.raw.pgm 1024
-	@echo "----------------------------------------"
+	# ./lz77_encoding peppers.raw.pgm 1024
+	# @echo "----------------------------------------"
 	./lz77_encoding peppers.raw.pgm 256
-	@echo "----------------------------------------"
-	./lz77_encoding goldhill.raw.pgm 5120
-	@echo "----------------------------------------"
-	./lz77_encoding goldhill.raw.pgm 1024
-	@echo "----------------------------------------"
-	./lz77_encoding goldhill.raw.pgm 256
+	# @echo "----------------------------------------"
+	# ./lz77_encoding goldhill.raw.pgm 5120
+	# @echo "----------------------------------------"
+	# ./lz77_encoding goldhill.raw.pgm 1024
+	# @echo "----------------------------------------"
+	# ./lz77_encoding goldhill.raw.pgm 256
 	@echo "----------------------------------------"
 
 testDecompression: lz77_decoding

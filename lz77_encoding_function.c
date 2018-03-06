@@ -2,8 +2,8 @@
 
 
 // Return the max of two integers
-int max(int a, int b){
-	return a > b ? a : b;
+int min(int a, int b){
+	return a > b ? b : a;
 }
 
 
@@ -49,7 +49,12 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	int max_match_num;			// match length
 	int cur_pos = 0;			// current position within the image
 	unsigned char cur_value;
-	while(cur_pos < total){
+
+
+	/*** DETERMINING TOKENS ***/
+
+	while(cur_pos < total - 1){
+
 		max_match_num = 0;
 		max_match_num = 0;
 
@@ -57,7 +62,7 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 		cur_value = get_pgm_image_value(image, cur_pos);
 
 		// Searching backwards through the buffer
-		for(int i = 0; i > max(0, cur_pos - searching_buffer_size); i--){
+		for(int i = 1; i <= min(cur_pos, searching_buffer_size); i++){
 
 			// If we find a match
 			if(get_pgm_image_value(image, cur_pos - i) == cur_value){
@@ -80,6 +85,9 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 		cur_pos += max_match_num + 1;
 	}
 
+
+	/*** SAVING COMPRESSED IMAGE + HEADER ***/
+
 	// Building the header
 	struct header* file_header = malloc(sizeof(struct header));
 	file_header->max_offset = searching_buffer_size;
@@ -89,12 +97,9 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	file_header->max_gray_value = MAX_GRAY_VALUE;
 
 	// Creating altered filename for output (lz)
-	char numstr1[21];
-	char* new_file_name1 = in_PGM_filename_Ptr + '1';
-	// char* new_file_name1 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr1, 10);
-	strcat(new_file_name1, "lz");
-
-	FILE *f = fopen(new_file_name1, "wb");
+	char numstr1[100];
+	sprintf(numstr1, "%s.%d.lz", in_PGM_filename_Ptr, searching_buffer_size);
+	FILE *f = fopen(numstr1, "wb");
 
 	// Writing to file
 	fwrite(file_header, sizeof(struct header), 1, f);
@@ -105,40 +110,62 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	fclose(f);
 
 
-	// Creating altered filename for output (csv)
-	char numstr2[21];
-	char* new_file_name2 = in_PGM_filename_Ptr + '1';
-	// char* new_file_name2 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr2, 10);
-	strcat(new_file_name2, ".offsets.csv");
+	/*** OFFSETS ***/
 
-	char numstr3[21];
-	char* new_file_name3 = in_PGM_filename_Ptr + '1';
-	// char* new_file_name3 = in_PGM_filename_Ptr + itoa(searching_buffer_size, numstr3, 10);
-	strcat(new_file_name3, ".lengths.csv");
-
-	f = fopen(new_file_name2, "w");
-	FILE *f2 = fopen(new_file_name3, "w");
-
-	// Writing offsets and mismatches to appropriate files
+	// Determining the frequencies of all of the offsets
+	int* offset_frequencies = calloc(searching_buffer_size + 1, sizeof(int));
 	for(int i = 0; i < number_of_tokens; i++){
-		if(i != 0){
-			fprintf(f, ",");
-			fprintf(f2, ",");
-		}
-		fprintf(f, "%d", offsets[i]);
-		fprintf(f, "%d", mismatches[i]);
+		offset_frequencies[offsets[i]]++;
 	}
 
-	fclose(f);
-	fclose(f2);
+	// Creating altered filename for output (csv)
+	char numstr2[100];
+	sprintf(numstr2, "%s.%d.offsets.csv", in_PGM_filename_Ptr, searching_buffer_size);
 
+	// Writing the offsets
+	f = fopen(numstr2, "w");
+	for(int i = 1; i <= searching_buffer_size; i++){
+		fprintf(f, "%d, %d\n", i, offset_frequencies[i]);
+	}
+	fclose(f);
+
+
+	/*** MATCH LENGTHS ***/
+
+	// Determining the range of match lengths
+	int max_match_length = 0;
+	for(int i = 0; i < number_of_tokens; i++){
+		if(match_lengths[i] > max_match_length){
+			max_match_length = match_lengths[i];
+		}
+	}
+
+	// Determining the frequencies of match lengths
+	int* match_length_frequencies = calloc(max_match_length + 1, sizeof(int));
+	for(int i = 0; i < number_of_tokens; i++){
+		match_length_frequencies[match_lengths[i]]++;
+	}
+
+	// // Creating altered filename for output (csv)
+	char numstr3[100];
+	sprintf(numstr3, "%s.%d.lengths.csv", in_PGM_filename_Ptr, searching_buffer_size);
+
+	// Writing the match lengths
+	f = fopen(numstr3, "w");
+	for(int i = 1; i <= max_match_length; i++){
+		fprintf(f, "%d, %d\n", i, match_length_frequencies[i]);
+	}
+	fclose(f);
+
+
+	/*** AVERAGE + STANDARD DEVIATION ***/
 
 	// Calculating the average
 	*avg_offset_Ptr = 0.0;
 	*avg_length_Ptr = 0.0;
 	for(int i = 0; i < number_of_tokens; i++){
 		*avg_offset_Ptr += offsets[i];
-		*avg_length_Ptr += mismatches[i];
+		*avg_length_Ptr += match_lengths[i];
 	}
 	*avg_offset_Ptr /= number_of_tokens;
 	*avg_length_Ptr /= number_of_tokens;
@@ -148,11 +175,11 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	*std_offset_Ptr = 0.0;
 	*std_length_Ptr = 0.0;
 	for(int i = 0; i < number_of_tokens; i++){
-		*avg_offset_Ptr += pow(offsets[i] - *avg_offset_Ptr, 2);
-		*avg_length_Ptr += pow(mismatches[i] - *avg_length_Ptr, 2);
+		*std_offset_Ptr += pow(offsets[i] - *avg_offset_Ptr, 2);
+		*std_length_Ptr += pow(mismatches[i] - *avg_length_Ptr, 2);
 	}
-	*avg_offset_Ptr = sqrt(*avg_offset_Ptr / number_of_tokens);
-	*avg_length_Ptr = sqrt(*avg_length_Ptr / number_of_tokens);
+	*std_offset_Ptr = sqrt(*avg_offset_Ptr / number_of_tokens);
+	*std_length_Ptr = sqrt(*avg_length_Ptr / number_of_tokens);
 
 
 	// Clearing all freed memory
