@@ -23,7 +23,7 @@ int main(int argc, char *argv[]){
 	// Checking the mean absolute error
 	float error = mean_absolute_error(argv[1], argv[2]);
 
-	printf("The mean absolute error between the two images is: %f\n", error);
+	printf("\nThe mean absolute error between the two images is: %f\n\n", error);
 	
 	return 0;
 }

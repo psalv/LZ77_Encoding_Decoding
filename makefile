@@ -176,18 +176,18 @@ testCompression: lz77_encoding
 	@echo "----------------------------------------"
 	@echo "Generating  LZ77 compressed images"
 	@echo 
-	# ./lz77_encoding peppers.raw.pgm 5120
-	# @echo "----------------------------------------"
-	# ./lz77_encoding peppers.raw.pgm 1024
-	# @echo "----------------------------------------"
+	./lz77_encoding peppers.raw.pgm 5120
+	@echo "----------------------------------------"
+	./lz77_encoding peppers.raw.pgm 1024
+	@echo "----------------------------------------"
 	./lz77_encoding peppers.raw.pgm 256
-	# @echo "----------------------------------------"
-	# ./lz77_encoding goldhill.raw.pgm 5120
-	# @echo "----------------------------------------"
-	# ./lz77_encoding goldhill.raw.pgm 1024
-	# @echo "----------------------------------------"
-	# ./lz77_encoding goldhill.raw.pgm 256
-	# @echo "----------------------------------------"
+	@echo "----------------------------------------"
+	./lz77_encoding goldhill.raw.pgm 5120
+	@echo "----------------------------------------"
+	./lz77_encoding goldhill.raw.pgm 1024
+	@echo "----------------------------------------"
+	./lz77_encoding goldhill.raw.pgm 256
+	@echo "----------------------------------------"
 
 testDecompression: lz77_decoding
 #
@@ -196,18 +196,18 @@ testDecompression: lz77_decoding
 	@echo "----------------------------------------"
 	@echo "Generating  LZ77 compressed images"
 	@echo 
-	# ./lz77_decoding peppers.raw.pgm.5120.lz
-	# @echo "----------------------------------------"
-	# ./lz77_decoding peppers.raw.pgm.1024.lz
-	# @echo "----------------------------------------"
+	./lz77_decoding peppers.raw.pgm.5120.lz
+	@echo "----------------------------------------"
+	./lz77_decoding peppers.raw.pgm.1024.lz
+	@echo "----------------------------------------"
 	./lz77_decoding peppers.raw.pgm.256.lz
-	# @echo "----------------------------------------"
-	# ./lz77_decoding goldhill.raw.pgm.5120.lz
-	# @echo "----------------------------------------"
-	# ./lz77_decoding goldhill.raw.pgm.1024.lz
-	# @echo "----------------------------------------"
-	# ./lz77_decoding goldhill.raw.pgm.256.lz
-	# @echo "----------------------------------------"
+	@echo "----------------------------------------"
+	./lz77_decoding goldhill.raw.pgm.5120.lz
+	@echo "----------------------------------------"
+	./lz77_decoding goldhill.raw.pgm.1024.lz
+	@echo "----------------------------------------"
+	./lz77_decoding goldhill.raw.pgm.256.lz
+	@echo "----------------------------------------"
 
 testComparingImages: compare_pgm_images
 #
