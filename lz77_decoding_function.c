@@ -47,7 +47,7 @@ void Decode_Using_LZ77(char *in_compressed_filename_Ptr){
 			// Adjusting for non positive indices
 			int pos = cur_pos - j;
 			if(j <= 0){
-				pos = 3 - (j % offsets[i]); 
+				pos = cur_pos - offsets[i] + (j % offsets[i]); 
 			}
 
 			save_pgm_image_value(image, cur_pos, get_pgm_image_value(image, pos));
