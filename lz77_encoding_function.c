@@ -81,7 +81,7 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 		offsets[number_of_tokens] = max_match_pos;				// offset away
 		match_lengths[number_of_tokens] = max_match_num;		// how long the match was
 		if(cur_pos + max_match_num == total){
-			mismatches[number_of_tokens++] = 0;
+			mismatches[number_of_tokens++] = EOF;
 		} else{
 			mismatches[number_of_tokens++] = get_pgm_image_value(image, cur_pos + max_match_num);	// the value after the match
 		}

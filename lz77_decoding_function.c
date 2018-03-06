@@ -40,7 +40,6 @@ void Decode_Using_LZ77(char *in_compressed_filename_Ptr){
 
 
 	/*** DECOMPRESSING THE IMAGE ***/
-
 	int cur_pos = 0;
 	for(int i = 0; i < number_of_tokens; i++){
 		for(int j = offsets[i]; j > offsets[i] - match_lengths[i]; j--){
@@ -56,7 +55,9 @@ void Decode_Using_LZ77(char *in_compressed_filename_Ptr){
 		}
 
 		// Adding the mismatch
-		save_pgm_image_value(image, cur_pos, mismatches[i]);
+		if(mismatches[i] != -1){
+			save_pgm_image_value(image, cur_pos, mismatches[i]);
+		}
 		cur_pos++;
 	}
 
