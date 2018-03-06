@@ -16,6 +16,7 @@ unsigned char get_pgm_image_value(struct PGM_Image* image, int pos){
 // Determine the number of matching characters when using an offset of match_pos
 // and a frontier of text_pos
 int find_number_of_matches(struct PGM_Image* image, int match_pos, int text_pos, int total){
+
 	int match_num = 0;
 	while(get_pgm_image_value(image, match_pos) == get_pgm_image_value(image, text_pos)){
 		match_num++;
@@ -33,7 +34,7 @@ int find_number_of_matches(struct PGM_Image* image, int match_pos, int text_pos,
 void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_size, 
 	float *avg_offset_Ptr, float *std_offset_Ptr, float *avg_length_Ptr, 
 	float *std_length_Ptr){
-	
+
 	// loading the image
 	struct PGM_Image* image = malloc(sizeof(struct PGM_Image));
 	load_PGM_Image(image, in_PGM_filename_Ptr);
@@ -52,7 +53,7 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 
 
 	/*** DETERMINING TOKENS ***/
-
+	
 	while(cur_pos < total - 1){
 
 		max_match_num = 0;
@@ -79,8 +80,11 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 		// Update the token information
 		offsets[number_of_tokens] = max_match_pos;				// offset away
 		match_lengths[number_of_tokens] = max_match_num;		// how long the match was
-		mismatches[number_of_tokens++] = get_pgm_image_value(image, cur_pos + max_match_num);	// the value after the match
-
+		if(cur_pos + max_match_num == total){
+			mismatches[number_of_tokens++] = "";
+		} else{
+			mismatches[number_of_tokens++] = get_pgm_image_value(image, cur_pos + max_match_num);	// the value after the match
+		}
 		// Update the current position to be the position after the next mismatch
 		cur_pos += max_match_num + 1;
 	}

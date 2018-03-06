@@ -176,16 +176,16 @@ testCompression: lz77_encoding
 	@echo "----------------------------------------"
 	@echo "Generating  LZ77 compressed images"
 	@echo 
-	# ./lz77_encoding peppers.raw.pgm 5120
-	# @echo "----------------------------------------"
-	# ./lz77_encoding peppers.raw.pgm 1024
-	# @echo "----------------------------------------"
-	# ./lz77_encoding peppers.raw.pgm 256
-	# @echo "----------------------------------------"
-	# ./lz77_encoding goldhill.raw.pgm 5120
-	# @echo "----------------------------------------"
-	# ./lz77_encoding goldhill.raw.pgm 1024
-	# @echo "----------------------------------------"
+	./lz77_encoding peppers.raw.pgm 5120
+	@echo "----------------------------------------"
+	./lz77_encoding peppers.raw.pgm 1024
+	@echo "----------------------------------------"
+	./lz77_encoding peppers.raw.pgm 256
+	@echo "----------------------------------------"
+	./lz77_encoding goldhill.raw.pgm 5120
+	@echo "----------------------------------------"
+	./lz77_encoding goldhill.raw.pgm 1024
+	@echo "----------------------------------------"
 	./lz77_encoding goldhill.raw.pgm 256
 	@echo "----------------------------------------"
 
