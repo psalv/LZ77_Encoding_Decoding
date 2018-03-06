@@ -2,7 +2,7 @@
 #include "lz77_encoding_function.c"
 
 
-// Save a value based on 1D number in 2D PGm image
+// Save a value based on 1D number in 2D PGM image
 void save_pgm_image_value(struct PGM_Image* image, int pos, unsigned char value){
 	image->image[(int)floor(pos / image->width)][pos % image->width] = value;
 }
@@ -40,6 +40,7 @@ void Decode_Using_LZ77(char *in_compressed_filename_Ptr){
 
 
 	/*** DECOMPRESSING THE IMAGE ***/
+
 	int cur_pos = 0;
 	for(int i = 0; i < number_of_tokens; i++){
 		for(int j = offsets[i]; j > offsets[i] - match_lengths[i]; j--){
