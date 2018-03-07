@@ -113,9 +113,6 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 
 	fclose(f);
 
-	free(mismatches);
-	free(file_header);
-	free(image);
 
 
 	/*** OFFSETS ***/
@@ -132,11 +129,12 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 
 	// Writing the offsets
 	f = fopen(numstr2, "w");
-	for(int i = 1; i <= searching_buffer_size; i++){
-		fprintf(f, "%d, %d\n", i, offset_frequencies[i]);
+	for(int i = 0; i <= searching_buffer_size; i++){
+		if(offset_frequencies[i] != 0){
+			fprintf(f, "%d, %d\n", i, offset_frequencies[i]);
+		}
 	}
 	fclose(f);
-	free(offset_frequencies);
 
 
 	/*** MATCH LENGTHS ***/
@@ -161,11 +159,12 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 
 	// Writing the match lengths
 	f = fopen(numstr3, "w");
-	for(int i = 1; i <= max_match_length; i++){
-		fprintf(f, "%d, %d\n", i, match_length_frequencies[i]);
+	for(int i = 0; i <= max_match_length; i++){
+		if(match_length_frequencies[i] != 0){
+			fprintf(f, "%d, %d\n", i, match_length_frequencies[i]);
+		}	
 	}
 	fclose(f);
-	free(match_length_frequencies);
 
 
 	/*** AVERAGE + STANDARD DEVIATION ***/
@@ -191,7 +190,12 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 	*std_offset_Ptr = sqrt(*avg_offset_Ptr / number_of_tokens);
 	*std_length_Ptr = sqrt(*avg_length_Ptr / number_of_tokens);
 
-	// Clearing all freed memory
+	// Clearing all allocated memory
 	free(offsets);
 	free(match_lengths);
+	free(mismatches);
+	free(file_header);
+	free(image);
+	free(match_length_frequencies);
+	free(offset_frequencies);
 }
