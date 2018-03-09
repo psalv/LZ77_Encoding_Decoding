@@ -129,7 +129,7 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 
 	// Writing the offsets
 	f = fopen(numstr2, "w");
-	for(int i = 0; i <= searching_buffer_size; i++){
+	for(int i = 0; i < searching_buffer_size; i++){
 		if(offset_frequencies[i] != 0){
 			fprintf(f, "%d, %d\n", i, offset_frequencies[i]);
 		}
@@ -159,7 +159,7 @@ void Encode_Using_LZ77(char *in_PGM_filename_Ptr, unsigned int searching_buffer_
 
 	// Writing the match lengths
 	f = fopen(numstr3, "w");
-	for(int i = 0; i <= max_match_length; i++){
+	for(int i = 0; i < max_match_length; i++){
 		if(match_length_frequencies[i] != 0){
 			fprintf(f, "%d, %d\n", i, match_length_frequencies[i]);
 		}	
